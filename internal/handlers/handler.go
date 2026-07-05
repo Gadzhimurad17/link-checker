@@ -1,5 +1,4 @@
 package handlers
-package service
 
 import (
 	"net/http"
@@ -19,4 +18,3 @@ func HandleRequest() {
 func main() {
 
 }
-
