@@ -1,17 +1,19 @@
 package handlers
 
 import (
-	"context"
 	"encoding/json"
 	"fmt"
+	link "linkcheker/internal/interfaces/http/dto"
+	service "linkcheker/internal/interfaces/services"
 	"log"
 	"net/http"
-	"sync"
-	"time"
-
-	//"github.com/joho/godotenv"
-	link "linkcheker/internal/interfaces/http/dto"
+	"os"
+	"strconv"
 )
+
+type LinkCheckerHandler struct {
+	service *service.LinkCheckerService
+}
 
 func encode[T any](rw http.ResponseWriter, status int, v T) error {
 	rw.Header().Set("Content-Type", "application/json")
@@ -29,48 +31,30 @@ func decode[T any](req *http.Request) (T, error) {
 	}
 	return v, nil
 }
-func CheckLinks(rw http.ResponseWriter, req *http.Request) {
-	resultch := make(chan link.LinkResponse)
-	sem := make(chan struct{}, 20)
+
+func (h *LinkCheckerHandler) CheckLinks(rw http.ResponseWriter, req *http.Request) {
+	linksAmount, err := strconv.Atoi(os.Getenv("MAX_LINKS_AMOUNT"))
+	if err != nil || linksAmount <= 0 {
+		http.Error(rw, "invalid MAX_LINKS_AMOUNT", http.StatusInternalServerError)
+		return
+	}
+
 	encodeReq, err := decode[link.LinkRequest](req)
 	if err != nil {
-		log.Printf("Decoding error json", err)
+		log.Printf("Decoding error json %v", err)
 		rw.WriteHeader(http.StatusBadRequest)
 		return
 	}
-	linksAmmount := len(encodeReq.Links)
-	var wg sync.WaitGroup
-	for i := 0; i < linksAmmount; i++ {
-		wg.Add(1)
-		go func(i int) {
-			defer wg.Done()
-			status := CheckLink(req.Context(), encodeReq.Links[i])
-			resultch<-link.LinkResponse{
-				URL:encodeReq.Links[i],
-				Status: status,
-			}
-		}(i)
-	}
-	wg.Wait()
-}
 
-func CheckLink(parentCtx context.Context, url string) bool {
-	context, cancel := context.WithTimeout(parentCtx, 2*time.Second)
-	defer cancel()
-	req, err := http.NewRequestWithContext(context, http.MethodGet, "https://"+url, nil)
-	if err != nil {
-		return false
-	}
-	resp, err := http.DefaultClient.Do(req)
-	if err != nil {
-		return false
-	}
-	defer resp.Body.Close()
-	return resp.StatusCode >= 200 && resp.StatusCode < 400
-}
+	results := h.service.CheckLinks(
+		req.Context(),
+		encodeReq.Links,
+	)
 
-func HandleRequest(rw http.ResponseWriter, req *http.Request) {
-	rw.Header().Set("Content-type", "application/json")
+	rw.Header().Set("Content-Type", "application/json")
+	if err := json.NewEncoder(rw).Encode(results); err != nil {
+		log.Printf("Encoding error: %v", err)
+	}
 }
 
 func CheckApiHealth(rw http.ResponseWriter, req *http.Request) {
