@@ -6,7 +6,7 @@ import (
 )
 
 func Routes(s *srv.Server) {
-	s.GetMux().HandleFunc("POST/links", hdlr.CheckLinks)
-	s.GetMux().HandleFunc("GET/links")
+	s.GetMux().HandleFunc("POST/links", hdlr.LinkCheckerHandler)
+	s.GetMux().HandleFunc("GET/links",)
 	s.GetMux().HandleFunc("GET/api/health", hdlr.CheckApiHealth)
 }

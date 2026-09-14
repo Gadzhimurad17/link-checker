@@ -3,8 +3,8 @@ package handlers
 import (
 	"encoding/json"
 	"fmt"
+	service "linkcheker/internal/infrastructure/services"
 	link "linkcheker/internal/interfaces/http/dto"
-	service "linkcheker/internal/interfaces/services"
 	"log"
 	"net/http"
 	"os"
@@ -55,8 +55,4 @@ func (h *LinkCheckerHandler) CheckLinks(rw http.ResponseWriter, req *http.Reques
 	if err := json.NewEncoder(rw).Encode(results); err != nil {
 		log.Printf("Encoding error: %v", err)
 	}
-}
-
-func CheckApiHealth(rw http.ResponseWriter, req *http.Request) {
-
 }

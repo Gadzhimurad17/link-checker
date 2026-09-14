@@ -54,10 +54,10 @@ func (s *LinkCheckerService) CheckLinks(ctx context.Context, links []string) []l
 }
 
 func CheckLink(parentCtx context.Context, url string) bool {
-	context, cancel := context.WithTimeout(parentCtx, 2*time.Second)
+	ctx, cancel := context.WithTimeout(parentCtx, 2*time.Second)
 	defer cancel()
 
-	req, err := http.NewRequestWithContext(context, http.MethodGet, "https://"+url, nil)
+	req, err := http.NewRequestWithContext(ctx, http.MethodGet, "https://"+url, nil)
 	if err != nil {
 		return false
 	}
