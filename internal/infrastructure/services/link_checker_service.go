@@ -2,22 +2,26 @@ package services
 
 import (
 	"context"
+	"linkcheker/internal/domain/ports/repo"
 	semathore "linkcheker/internal/infrastructure"
-	link "linkcheker/internal/interfaces/http/dto"
+	link "linkcheker/internal/infrastructure/dto"
 	"net/http"
 	"sync"
 	"time"
 )
 
 type LinkCheckerService struct {
-	sem semathore.Semathore
+	sem      semathore.Semathore
+	linkRepo repo.LinkRepository
 }
 
-func NewLinkCheckerService(maxLinks int) *LinkCheckerService {
+func NewLinkCheckerService(maxLinks int, linkRepo repo.LinkRepository) *LinkCheckerService {
 	return &LinkCheckerService{
+
 		sem: semathore.Semathore{
 			C: make(chan struct{}, maxLinks),
 		},
+		linkRepo: linkRepo,
 	}
 }
 
@@ -32,7 +36,7 @@ func (s *LinkCheckerService) CheckLinks(ctx context.Context, links []string) []l
 			s.sem.Acquire(1)
 			defer s.sem.Release(1)
 
-			status := CheckLink(ctx, links[i])
+			status := checkLink(ctx, links[i])
 
 			resultch <- link.LinkResult{
 				URL:    links[i],
@@ -53,11 +57,11 @@ func (s *LinkCheckerService) CheckLinks(ctx context.Context, links []string) []l
 	return results
 }
 
-func CheckLink(parentCtx context.Context, url string) bool {
+func checkLink(parentCtx context.Context, url string) bool {
 	ctx, cancel := context.WithTimeout(parentCtx, 2*time.Second)
 	defer cancel()
 
-	req, err := http.NewRequestWithContext(ctx, http.MethodGet, "https://"+url, nil)
+	req, err := http.NewRequestWithContext(ctx, http.MethodGet, "http://"+url, nil)
 	if err != nil {
 		return false
 	}

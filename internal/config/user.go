@@ -1,5 +1,5 @@
 package config
 
 type UserConfig struct {
-	ApiKey int `env:"API_KEY"`
+	ApiKey string `env:"API_KEY"`
 }

@@ -1,4 +1,4 @@
-package link
+package dto
 
 type LinkRequest struct {
 	Links []string `json:"links"`
@@ -7,6 +7,7 @@ type LinkRequest struct {
 type LinkResponse struct {
 	Links []LinkResult `json:"links"`
 }
+
 type LinkResult struct {
 	URL    string `json:"link_url"`
 	Status bool
