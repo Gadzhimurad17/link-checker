@@ -9,5 +9,6 @@ func main() {
 	config := config.LoadFromEnv()
 	factory := f.NewFactory(config)
 	app := factory.NewApp()
+	
 	app.Start()
 }

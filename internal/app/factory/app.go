@@ -6,8 +6,8 @@ import (
 
 func (f *Factory) NewApp() *app.App {
 	linkCheckerHandler := f.NewHandlers()
-
-	httpServer := f.NewHttpServer(linkCheckerHandler)
+	httpMiddleware := f.NewMiddleware()
+	httpServer := f.NewHttpServer(linkCheckerHandler, httpMiddleware)
 
 	return &app.App{
 		Server: *httpServer,

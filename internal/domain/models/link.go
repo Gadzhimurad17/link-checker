@@ -1,6 +1,10 @@
 package models
 
-type Link struct {
-	URL        string `json:"link_url"`
-	LinkAmount int    `json:"link_amount"`
+type LinkStat struct {
+	URL    string `json:"url"`
+	Amount uint64 `json:"amount"`
+}
+
+type LinksStats struct {
+	Stats []LinkStat `json:"stats"`
 }

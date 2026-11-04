@@ -27,7 +27,7 @@ func decode[T any](req *http.Request) (T, error) {
 
 func (h *Handlers) CheckLinks(rw http.ResponseWriter, req *http.Request) {
 
-	dencodeReq, err := decode[dto.LinkRequest](req)
+	decodeReq, err := decode[dto.LinkRequest](req)
 	if err != nil {
 		log.Printf("Decoding error json %v", err)
 		rw.WriteHeader(http.StatusBadRequest)
@@ -36,13 +36,22 @@ func (h *Handlers) CheckLinks(rw http.ResponseWriter, req *http.Request) {
 
 	results := h.service.CheckLinks(
 		req.Context(),
-		dencodeReq.Links,
+		decodeReq.Links,
 	)
-	
+
 	if err := encode(rw, http.StatusOK, results); err != nil {
 		log.Printf("Encoding to json error %v", err)
 		rw.WriteHeader(http.StatusBadRequest)
 		return
 	}
 
+}
+
+func (h *Handlers) GetMostPopularLinks(rw http.ResponseWriter, req *http.Request) {
+	results := h.service.PopularLinks()
+	if err := encode(rw, http.StatusOK, results); err != nil {
+		log.Printf("Encoding to json error %v", err)
+		rw.WriteHeader(http.StatusBadRequest)
+		return
+	}
 }

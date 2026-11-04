@@ -22,9 +22,11 @@ func (f *Factory) NewHandlers() *http.Handlers {
 	linkService := f.newServiсes(repo)
 	return http.NewHandlers(linkService)
 }
-
-func (f *Factory) NewHttpServer(handlers *http.Handlers) *http.Server {
+func (f *Factory) NewMiddleware() *http.Middleware {
+	return http.NewMiddleware(f.cfg.ApiKey)
+}
+func (f *Factory) NewHttpServer(handlers *http.Handlers, middleware *http.Middleware) *http.Server {
 	host := f.cfg.AppHost
 	port := f.cfg.AppPort
-	return http.NewServer(host, port, handlers)
+	return http.NewServer(host, port, handlers, middleware)
 }
