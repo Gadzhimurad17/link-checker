@@ -9,6 +9,14 @@ type LinkResponse struct {
 }
 
 type LinkResult struct {
-	URL    string `json:"link_url"`
-	Status bool
+	URL    string `json:"link"`
+	Status bool   `json:"status"`
+}
+
+type LinkAmountResult struct {
+	URL    string `json:"link"`
+	Amount int    `json:"amount"`
+}
+type LinkAmountResponse struct {
+	Links []LinkAmountResult 
 }

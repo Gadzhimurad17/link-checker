@@ -2,10 +2,12 @@ package services
 
 import (
 	"context"
+	"linkcheker/internal/domain/models"
 	"linkcheker/internal/domain/ports/repo"
 	semathore "linkcheker/internal/infrastructure"
 	link "linkcheker/internal/infrastructure/dto"
 	"net/http"
+	"sort"
 	"sync"
 	"time"
 )
@@ -35,6 +37,9 @@ func (s *LinkCheckerService) CheckLinks(ctx context.Context, links []string) []l
 
 			s.sem.Acquire(1)
 			defer s.sem.Release(1)
+			url := links[i]
+
+			s.linkRepo.CreateLink(ctx, url)
 
 			status := checkLink(ctx, links[i])
 
@@ -72,4 +77,17 @@ func checkLink(parentCtx context.Context, url string) bool {
 
 	defer resp.Body.Close()
 	return resp.StatusCode >= 200 && resp.StatusCode < 400
+}
+
+func (s *LinkCheckerService) PopularLinks() []models.LinkStat {
+	links := s.linkRepo.ListLinks()
+
+	sort.Slice(links, func(i, j int) bool {
+		if links[i].Amount == links[j].Amount {
+			return links[i].URL < links[j].URL
+		}
+		return links[i].Amount > links[j].Amount
+	})
+
+	return links
 }
