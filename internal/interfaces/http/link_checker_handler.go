@@ -38,7 +38,8 @@ func (h *Handlers) CheckLinks(rw http.ResponseWriter, req *http.Request) {
 		req.Context(),
 		dencodeReq.Links,
 	)
-	if err := encode(rw, http.StatusAccepted, results); err != nil {
+	
+	if err := encode(rw, http.StatusOK, results); err != nil {
 		log.Printf("Encoding to json error %v", err)
 		rw.WriteHeader(http.StatusBadRequest)
 		return
