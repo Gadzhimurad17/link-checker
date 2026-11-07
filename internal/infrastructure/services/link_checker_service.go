@@ -79,8 +79,8 @@ func checkLink(parentCtx context.Context, url string) bool {
 	return resp.StatusCode >= 200 && resp.StatusCode < 400
 }
 
-func (s *LinkCheckerService) PopularLinks() []models.LinkStat {
-	links := s.linkRepo.ListLinks()
+func (s *LinkCheckerService) PopularLinks(limit int64) []models.LinkStat {
+	links := s.linkRepo.FindLinks()
 
 	sort.Slice(links, func(i, j int) bool {
 		if links[i].Amount == links[j].Amount {
@@ -89,5 +89,8 @@ func (s *LinkCheckerService) PopularLinks() []models.LinkStat {
 		return links[i].Amount > links[j].Amount
 	})
 
+	links = links[:limit]
 	return links
 }
+
+

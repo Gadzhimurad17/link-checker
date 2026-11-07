@@ -9,5 +9,5 @@ type LinkRepository interface {
 	CreateLink(ctx context.Context, link string) error
 	CheckStatus(ctx context.Context, link string) (bool, error)
 	DeleteLink(ctx context.Context, link string)
-	ListLinks() []models.LinkStat
+	FindLinks() []models.LinkStat
 }

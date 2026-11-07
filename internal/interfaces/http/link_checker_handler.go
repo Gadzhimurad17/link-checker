@@ -6,6 +6,7 @@ import (
 	"linkcheker/internal/infrastructure/dto"
 	"log"
 	"net/http"
+	"strconv"
 )
 
 func encode[T any](rw http.ResponseWriter, status int, v T) error {
@@ -48,10 +49,21 @@ func (h *Handlers) CheckLinks(rw http.ResponseWriter, req *http.Request) {
 }
 
 func (h *Handlers) GetMostPopularLinks(rw http.ResponseWriter, req *http.Request) {
-	results := h.service.PopularLinks()
+	limit := req.PathValue("limit")
+	limitInt, err := strconv.ParseInt(limit, 4, 8)
+	if err != nil {
+
+	}
+
+	results := h.service.PopularLinks(limitInt)
+
 	if err := encode(rw, http.StatusOK, results); err != nil {
 		log.Printf("Encoding to json error %v", err)
 		rw.WriteHeader(http.StatusBadRequest)
 		return
 	}
+}
+
+func (h *Handlers) CheckApiHealth(w http.ResponseWriter, r *http.Request) {
+	w.WriteHeader(http.StatusOK)
 }

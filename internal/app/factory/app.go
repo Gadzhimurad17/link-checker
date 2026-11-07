@@ -10,7 +10,7 @@ func (f *Factory) NewApp() *app.App {
 	httpServer := f.NewHttpServer(linkCheckerHandler, httpMiddleware)
 
 	return &app.App{
-		Server: *httpServer,
+		Server: httpServer,
 	}
 
 }

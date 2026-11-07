@@ -6,7 +6,7 @@ import (
 )
 
 type App struct {
-	Server http.Server
+	Server *http.Server
 }
 
 func (app *App) Start() {

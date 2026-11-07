@@ -33,7 +33,7 @@ func (r *LinkRepo) DeleteLink(ctx context.Context, link string) {
 	r.storage.LoadLink(link)
 }
 
-func (r *LinkRepo) ListLinks() []models.LinkStat {
+func (r *LinkRepo) FindLinks() []models.LinkStat {
 	links := r.storage.ListLinks()
 	return links
 }
