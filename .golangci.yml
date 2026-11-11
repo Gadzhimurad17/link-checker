@@ -98,9 +98,6 @@ linters:
     - usetesting
     - wastedassign
     - whitespace
-  disable:
-    - errcheck
-
   settings:
     govet:
       enable:
