@@ -27,7 +27,6 @@ func decode[T any](req *http.Request) (T, error) {
 }
 
 func (h *Handlers) CheckLinks(rw http.ResponseWriter, req *http.Request) {
-
 	decodeReq, err := decode[dto.LinkRequest](req)
 	if err != nil {
 		log.Printf("Decoding error json %v", err)
@@ -45,14 +44,14 @@ func (h *Handlers) CheckLinks(rw http.ResponseWriter, req *http.Request) {
 		rw.WriteHeader(http.StatusBadRequest)
 		return
 	}
-
 }
 
 func (h *Handlers) GetMostPopularLinks(rw http.ResponseWriter, req *http.Request) {
 	limit := req.PathValue("limit")
 	limitInt, err := strconv.ParseInt(limit, 4, 8)
 	if err != nil {
-
+		http.Error(rw, "Invalid limit", http.StatusBadRequest)
+		return
 	}
 
 	results := h.service.PopularLinks(limitInt)
@@ -65,5 +64,14 @@ func (h *Handlers) GetMostPopularLinks(rw http.ResponseWriter, req *http.Request
 }
 
 func (h *Handlers) CheckApiHealth(w http.ResponseWriter, r *http.Request) {
+	w.WriteHeader(http.StatusOK)
+}
+
+func (h *Handlers) ReadinessCheck(w http.ResponseWriter, r *http.Request) {
+	if h.isShuttingDown.Load() {
+		w.WriteHeader(http.StatusServiceUnavailable)
+		return
+	}
+
 	w.WriteHeader(http.StatusOK)
 }

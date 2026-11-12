@@ -16,9 +16,8 @@ func NewRepository(storage *linksStorage.Links) *LinkRepo {
 	}
 }
 
-func (r *LinkRepo) CreateLink(ctx context.Context, link string) error {
+func (r *LinkRepo) CreateLink(ctx context.Context, link string) {
 	r.storage.StoreLink(link)
-	return nil
 }
 
 func (r *LinkRepo) CheckStatus(ctx context.Context, link string) (bool, error) {
@@ -30,7 +29,7 @@ func (r *LinkRepo) CheckStatus(ctx context.Context, link string) (bool, error) {
 }
 
 func (r *LinkRepo) DeleteLink(ctx context.Context, link string) {
-	r.storage.LoadLink(link)
+	r.storage.DeleteLink(link)
 }
 
 func (r *LinkRepo) FindLinks() []models.LinkStat {

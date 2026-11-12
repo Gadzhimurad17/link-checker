@@ -6,11 +6,14 @@ import (
 	"linkcheker/internal/domain/ports/repo"
 	semathore "linkcheker/internal/infrastructure"
 	link "linkcheker/internal/infrastructure/dto"
+	"log/slog"
 	"net/http"
 	"sort"
 	"sync"
 	"time"
 )
+
+const linkCheckTimeout = 2 * time.Second
 
 type LinkCheckerService struct {
 	sem      semathore.Semathore
@@ -63,7 +66,7 @@ func (s *LinkCheckerService) CheckLinks(ctx context.Context, links []string) []l
 }
 
 func checkLink(parentCtx context.Context, url string) bool {
-	ctx, cancel := context.WithTimeout(parentCtx, 2*time.Second)
+	ctx, cancel := context.WithTimeout(parentCtx, linkCheckTimeout)
 	defer cancel()
 
 	req, err := http.NewRequestWithContext(ctx, http.MethodGet, "http://"+url, nil)
@@ -75,7 +78,14 @@ func checkLink(parentCtx context.Context, url string) bool {
 		return false
 	}
 
-	defer resp.Body.Close()
+	defer func() {
+		if err := resp.Body.Close(); err != nil {
+			slog.ErrorContext(ctx, "Failed to close response body",
+				slog.Any("error", err),
+			)
+		}
+	}()
+
 	return resp.StatusCode >= 200 && resp.StatusCode < 400
 }
 
@@ -92,5 +102,3 @@ func (s *LinkCheckerService) PopularLinks(limit int64) []models.LinkStat {
 	links = links[:limit]
 	return links
 }
-
-

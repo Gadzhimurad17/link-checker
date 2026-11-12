@@ -1,7 +1,6 @@
 package storage
 
 import (
-	"errors"
 	"linkcheker/internal/domain/models"
 	"sync"
 	"sync/atomic"
@@ -26,7 +25,7 @@ func (l *Links) StoreLink(link string) {
 func (l *Links) LoadLink(link string) (models.LinkStat, error) {
 	value, ok := l.links.Load(link)
 	if !ok {
-		return models.LinkStat{}, errors.New("link doesn't exist")
+		return models.LinkStat{}, ErrLinkNotFound
 	}
 
 	counter := value.(*atomic.Uint64)
