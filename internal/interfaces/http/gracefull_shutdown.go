@@ -10,7 +10,7 @@ import (
 
 const (
 	shutdownPeriod      = 15 * time.Second
-	readinessDrainDelay = 5 * time.Second
+	readinessDrainDelay = 3 * time.Second
 )
 
 func (s *Server) Close(ctx context.Context) {
