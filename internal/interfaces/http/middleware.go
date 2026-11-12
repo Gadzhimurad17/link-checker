@@ -1,6 +1,9 @@
 package http
 
-import "net/http"
+import (
+	"context"
+	"net/http"
+)
 
 type Middleware struct {
 	apiKey string
@@ -13,9 +16,8 @@ func NewMiddleware(apiKey string) *Middleware {
 }
 
 func (m *Middleware) ValidateApiKey(next http.HandlerFunc) http.HandlerFunc {
-
 	return func(rw http.ResponseWriter, req *http.Request) {
-		apiKey := req.Header.Get("x-api-key")
+		apiKey := req.Header.Get("X-Api-Key")
 		if apiKey != m.apiKey {
 			http.Error(rw, "Forbidden", http.StatusForbidden)
 			return
@@ -35,5 +37,28 @@ func (m *Middleware) ContentTypeChecker(next http.HandlerFunc) http.HandlerFunc 
 		}
 		next(rw, req)
 	}
+}
 
+func (m *Middleware) WithGracefulShutdown(next http.Handler, cancelCh <-chan struct{}) http.Handler {
+	return http.HandlerFunc(func(rw http.ResponseWriter, req *http.Request) {
+		ctx, cancel := m.cancel(req.Context(), cancelCh)
+		defer cancel()
+
+		req = req.WithContext(ctx)
+		next.ServeHTTP(rw, req)
+	})
+}
+
+func (m *Middleware) cancel(parentCtx context.Context, cancelCh <-chan struct{}) (context.Context, context.CancelFunc) {
+	ctx, cancel := context.WithCancel(parentCtx)
+
+	go func() {
+		select {
+		case <-cancelCh:
+			cancel()
+		case <-parentCtx.Done():
+		}
+	}()
+
+	return ctx, cancel
 }

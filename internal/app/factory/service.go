@@ -6,6 +6,6 @@ import (
 	"linkcheker/internal/infrastructure/services"
 )
 
-func (f *Factory) newServiсes(repo repo.LinkRepository) service.LinkCheckerService {
+func (f *Factory) newServices(repo repo.LinkRepository) service.LinkCheckerService {
 	return services.NewLinkCheckerService(f.cfg.MaxLinksAmount, repo)
 }

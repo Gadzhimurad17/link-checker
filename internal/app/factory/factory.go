@@ -19,7 +19,7 @@ func (f *Factory) NewHandlers() *http.Handlers {
 	// repos
 	repo := f.newRepos()
 	// services
-	linkService := f.newServiсes(repo)
+	linkService := f.newServices(repo)
 	return http.NewHandlers(linkService)
 }
 func (f *Factory) NewMiddleware() *http.Middleware {

@@ -14,5 +14,5 @@ func (app *App) Start() {
 }
 
 func (app *App) Stop(ctx context.Context) {
-	app.Server.Close(ctx)
+	app.Server.Shutdown(ctx)
 }

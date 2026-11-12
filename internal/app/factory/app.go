@@ -12,5 +12,4 @@ func (f *Factory) NewApp() *app.App {
 	return &app.App{
 		Server: httpServer,
 	}
-
 }
