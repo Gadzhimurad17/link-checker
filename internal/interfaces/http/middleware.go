@@ -2,7 +2,9 @@ package http
 
 import (
 	"context"
+	"log"
 	"net/http"
+	"time"
 )
 
 type Middleware struct {
@@ -46,6 +48,39 @@ func (m *Middleware) WithGracefulShutdown(next http.Handler, cancelCh <-chan str
 
 		req = req.WithContext(ctx)
 		next.ServeHTTP(rw, req)
+	})
+}
+
+func (m *Middleware) LogRequests(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		start := time.Now()
+		recorder := &responseRecorder{ResponseWriter: w}
+
+		next.ServeHTTP(recorder, r)
+
+		status := recorder.status
+		if status == 0 {
+			status = http.StatusOK
+		}
+
+		color := "\033[32m"
+		switch {
+		case status >= http.StatusInternalServerError:
+			color = "\033[31m"
+		case status >= http.StatusBadRequest:
+			color = "\033[33m"
+		case status >= http.StatusMultipleChoices:
+			color = "\033[36m"
+		}
+
+		log.Printf(
+			"%s%d %-7s\033[0m | %10s | %s",
+			color,
+			status,
+			r.Method,
+			time.Since(start).Round(time.Microsecond),
+			r.URL.Path,
+		)
 	})
 }
 

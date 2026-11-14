@@ -34,7 +34,7 @@ func (s *Server) Start() {
 		s.RegisterRoutes(mux)
 
 		// Подключаем маршруты к HTTP-серверу
-		handler := mux
+		handler := s.middleware.LogRequests(mux)
 		s.server.Handler = s.middleware.WithGracefulShutdown(handler, s.cancelChan)
 
 		l.Info("Starting server", slog.String("addr", s.server.Addr))
