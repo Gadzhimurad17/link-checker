@@ -7,5 +7,5 @@ import (
 
 type LinkCheckerService interface {
 	CheckLinks(ctx context.Context, links []string) []models.Link
-	PopularLinks(limit int64) []models.LinkStat
+	PopularLinks(limit int64, offset int64) []models.LinkStat
 }

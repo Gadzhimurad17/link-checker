@@ -88,16 +88,25 @@ func checkLink(parentCtx context.Context, url string) bool {
 	return resp.StatusCode >= 200 && resp.StatusCode < 400
 }
 
-func (s *LinkCheckerService) PopularLinks(limit int64) []models.LinkStat {
+func (s *LinkCheckerService) PopularLinks(limit int64, offset int64) []models.LinkStat {
 	links := s.linkRepo.FindLinks()
+	total := int64(len(links))
+
+	if offset < 0 || limit <= 0 || offset >= total {
+		return []models.LinkStat{}
+	}
 
 	sort.Slice(links, func(i, j int) bool {
 		if links[i].Amount == links[j].Amount {
 			return links[i].URL < links[j].URL
 		}
+
 		return links[i].Amount > links[j].Amount
 	})
 
-	links = links[:limit]
-	return links
+	if limit > total-offset {
+		limit = total - offset
+	}
+
+	return links[offset : offset+limit]
 }

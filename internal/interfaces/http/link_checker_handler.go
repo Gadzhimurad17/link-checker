@@ -61,7 +61,14 @@ func (h *Handlers) GetMostPopularLinks(rw http.ResponseWriter, req *http.Request
 		return
 	}
 
-	results := h.service.PopularLinks(limitInt)
+	offset := req.PathValue("offset")
+	offsetInt, err := strconv.ParseInt(offset, 4, 8)
+	if err != nil {
+		http.Error(rw, "Invalid limit", http.StatusBadRequest)
+		return
+	}
+
+	results := h.service.PopularLinks(limitInt, offsetInt)
 
 	if err := encode(rw, http.StatusOK, results); err != nil {
 		log.Printf("Encoding to json error %v", err)
