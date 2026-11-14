@@ -7,6 +7,12 @@ import (
 	"log"
 	"net/http"
 	"strconv"
+	"strings"
+)
+
+const (
+	httpPrefix  = "http://"
+	httpsPrefix = "https://"
 )
 
 func encode[T any](rw http.ResponseWriter, status int, v T) error {
@@ -33,6 +39,7 @@ func (h *Handlers) CheckLinks(rw http.ResponseWriter, req *http.Request) {
 		rw.WriteHeader(http.StatusBadRequest)
 		return
 	}
+	h.validateLinks(decodeReq)
 
 	results := h.service.CheckLinks(
 		req.Context(),
@@ -74,4 +81,19 @@ func (h *Handlers) ReadinessCheck(w http.ResponseWriter, r *http.Request) {
 	}
 
 	w.WriteHeader(http.StatusOK)
+}
+
+func (h *Handlers) validateLinks(links dto.LinkRequest) *dto.LinkRequest {
+	linksURL := links.Links
+
+	for index, link := range linksURL {
+		if !strings.HasPrefix(link, httpPrefix) &&
+			!strings.HasPrefix(link, httpsPrefix) {
+			linksURL[index] = httpsPrefix + link
+		}
+	}
+
+	return &dto.LinkRequest{
+		Links: linksURL,
+	}
 }

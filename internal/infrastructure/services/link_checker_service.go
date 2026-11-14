@@ -69,7 +69,7 @@ func checkLink(parentCtx context.Context, url string) bool {
 	ctx, cancel := context.WithTimeout(parentCtx, linkCheckTimeout)
 	defer cancel()
 
-	req, err := http.NewRequestWithContext(ctx, http.MethodGet, "http://"+url, nil)
+	req, err := http.NewRequestWithContext(ctx, http.MethodGet, url, nil)
 	if err != nil {
 		return false
 	}
