@@ -5,7 +5,6 @@ import (
 	"linkcheker/internal/domain/models"
 	"linkcheker/internal/domain/ports/repo"
 	semathore "linkcheker/internal/infrastructure"
-	link "linkcheker/internal/infrastructure/dto"
 	"log/slog"
 	"net/http"
 	"sort"
@@ -30,8 +29,8 @@ func NewLinkCheckerService(maxLinks int, linkRepo repo.LinkRepository) *LinkChec
 	}
 }
 
-func (s *LinkCheckerService) CheckLinks(ctx context.Context, links []string) []link.LinkResult {
-	resultch := make(chan link.LinkResult)
+func (s *LinkCheckerService) CheckLinks(ctx context.Context, links []string) []models.Link {
+	resultch := make(chan models.Link)
 	var wg sync.WaitGroup
 	for i := range links {
 		wg.Add(1)
@@ -46,7 +45,7 @@ func (s *LinkCheckerService) CheckLinks(ctx context.Context, links []string) []l
 
 			status := checkLink(ctx, links[i])
 
-			resultch <- link.LinkResult{
+			resultch <- models.Link{
 				URL:    links[i],
 				Status: status,
 			}
@@ -57,7 +56,7 @@ func (s *LinkCheckerService) CheckLinks(ctx context.Context, links []string) []l
 		wg.Wait()
 		close(resultch)
 	}()
-	var results []link.LinkResult
+	var results []models.Link
 
 	for val := range resultch {
 		results = append(results, val)
