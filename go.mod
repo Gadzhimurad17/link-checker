@@ -1,4 +1,4 @@
-module linkcheker
+module github.com/Gadzhimurad17/link-checker
 
 go 1.26.4
 

@@ -2,13 +2,14 @@ package services
 
 import (
 	"context"
-	"linkcheker/internal/domain/models"
-	"linkcheker/internal/domain/ports/repo"
 	"log/slog"
 	"net/http"
 	"sort"
 	"sync"
 	"time"
+
+	"github.com/Gadzhimurad17/link-checker/internal/domain/models"
+	"github.com/Gadzhimurad17/link-checker/internal/domain/ports/repo"
 )
 
 const linkCheckTimeout = 2 * time.Second

@@ -1,9 +1,9 @@
 package factory
 
 import (
-	"linkcheker/internal/config"
-	"linkcheker/internal/interfaces/http"
-	"linkcheker/internal/interfaces/http/handlers"
+	"github.com/Gadzhimurad17/link-checker/internal/config"
+	"github.com/Gadzhimurad17/link-checker/internal/interfaces/http"
+	"github.com/Gadzhimurad17/link-checker/internal/interfaces/http/handlers"
 )
 
 type Factory struct {

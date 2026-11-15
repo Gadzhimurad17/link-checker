@@ -2,7 +2,8 @@ package service
 
 import (
 	"context"
-	"linkcheker/internal/domain/models"
+
+	"github.com/Gadzhimurad17/link-checker/internal/domain/models"
 )
 
 type LinkCheckerService interface {

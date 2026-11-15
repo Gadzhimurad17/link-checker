@@ -2,8 +2,9 @@ package app
 
 import (
 	"context"
-	"linkcheker/internal/interfaces/http"
 	"time"
+
+	"github.com/Gadzhimurad17/link-checker/internal/interfaces/http"
 )
 
 type App struct {

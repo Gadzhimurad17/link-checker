@@ -1,9 +1,10 @@
 package storage
 
 import (
-	"linkcheker/internal/domain/models"
 	"sync"
 	"sync/atomic"
+
+	"github.com/Gadzhimurad17/link-checker/internal/domain/models"
 )
 
 type Links struct {

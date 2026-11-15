@@ -3,11 +3,12 @@ package handlers
 import (
 	"encoding/json"
 	"fmt"
-	"linkcheker/internal/domain/rules"
-	"linkcheker/internal/infrastructure/dto"
 	"log"
 	"net/http"
 	"strconv"
+
+	"github.com/Gadzhimurad17/link-checker/internal/domain/rules"
+	"github.com/Gadzhimurad17/link-checker/internal/infrastructure/dto"
 )
 
 func encode[T any](rw http.ResponseWriter, status int, v T) error {

@@ -1,10 +1,12 @@
 package factory
 
 import (
-	"linkcheker/internal/domain/ports/repo"
-	"linkcheker/internal/infrastructure/persistence/repository"
-	"linkcheker/internal/infrastructure/storage"
 	"sync"
+
+	"github.com/Gadzhimurad17/link-checker/internal/domain/ports/repo"
+
+	"github.com/Gadzhimurad17/link-checker/internal/infrastructure/persistence/repository"
+	"github.com/Gadzhimurad17/link-checker/internal/infrastructure/storage"
 )
 
 func (f *Factory) newRepos() repo.LinkRepository {

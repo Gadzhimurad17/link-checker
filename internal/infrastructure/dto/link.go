@@ -1,6 +1,6 @@
 package dto
 
-import "linkcheker/internal/domain/models"
+import "github.com/Gadzhimurad17/link-checker/internal/domain/models"
 
 type LinkRequest struct {
 	Links []string `json:"links"`

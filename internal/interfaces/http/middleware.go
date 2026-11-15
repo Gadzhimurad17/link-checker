@@ -1,10 +1,11 @@
 package http
 
 import (
-	"linkcheker/internal/interfaces/http/utils"
 	"log"
 	"net/http"
 	"time"
+
+	"github.com/Gadzhimurad17/link-checker/internal/interfaces/http/utils"
 )
 
 type Middleware struct {

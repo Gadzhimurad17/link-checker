@@ -1,8 +1,6 @@
 package handlers
 
-import (
-	"linkcheker/internal/domain/ports/service"
-)
+import "github.com/Gadzhimurad17/link-checker/internal/domain/ports/service"
 
 type Handlers struct {
 	service service.LinkCheckerService

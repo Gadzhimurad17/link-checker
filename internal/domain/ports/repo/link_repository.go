@@ -2,7 +2,8 @@ package repo
 
 import (
 	"context"
-	"linkcheker/internal/domain/models"
+
+	"github.com/Gadzhimurad17/link-checker/internal/domain/models"
 )
 
 type LinkRepository interface {

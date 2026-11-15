@@ -4,7 +4,6 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"linkcheker/internal/interfaces/http/handlers"
 	"log"
 	"log/slog"
 	"net/http"
@@ -12,6 +11,8 @@ import (
 	"sync/atomic"
 	"syscall"
 	"time"
+
+	"github.com/Gadzhimurad17/link-checker/internal/interfaces/http/handlers"
 )
 
 type Server struct {

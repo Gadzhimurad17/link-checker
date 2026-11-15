@@ -1,8 +1,9 @@
 package rules
 
 import (
-	"linkcheker/internal/infrastructure/dto"
 	"strings"
+
+	"github.com/Gadzhimurad17/link-checker/internal/infrastructure/dto"
 )
 
 const (

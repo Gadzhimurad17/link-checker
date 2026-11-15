@@ -2,8 +2,10 @@ package repository
 
 import (
 	"context"
-	"linkcheker/internal/domain/models"
-	linksStorage "linkcheker/internal/infrastructure/storage"
+
+	linksStorage "github.com/Gadzhimurad17/link-checker/internal/infrastructure/storage"
+
+	"github.com/Gadzhimurad17/link-checker/internal/domain/models"
 )
 
 type LinkRepo struct {
