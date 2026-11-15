@@ -23,7 +23,7 @@ func NewLinkCheckerService(maxLinks int, linkRepo repo.LinkRepository) *LinkChec
 	return &LinkCheckerService{
 
 		sem: semathore{
-			C: make(chan struct{}, maxLinks),
+			ch: make(chan struct{}, maxLinks),
 		},
 		linkRepo: linkRepo,
 	}
