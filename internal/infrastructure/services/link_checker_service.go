@@ -4,7 +4,6 @@ import (
 	"context"
 	"linkcheker/internal/domain/models"
 	"linkcheker/internal/domain/ports/repo"
-	semathore "linkcheker/internal/infrastructure"
 	"log/slog"
 	"net/http"
 	"sort"
@@ -15,14 +14,14 @@ import (
 const linkCheckTimeout = 2 * time.Second
 
 type LinkCheckerService struct {
-	sem      semathore.Semathore
+	sem      semathore
 	linkRepo repo.LinkRepository
 }
 
 func NewLinkCheckerService(maxLinks int, linkRepo repo.LinkRepository) *LinkCheckerService {
 	return &LinkCheckerService{
 
-		sem: semathore.Semathore{
+		sem: semathore{
 			C: make(chan struct{}, maxLinks),
 		},
 		linkRepo: linkRepo,
@@ -56,7 +55,7 @@ func (s *LinkCheckerService) CheckLinks(ctx context.Context, links []string) []m
 		wg.Wait()
 		close(resultch)
 	}()
-	var results []models.Link
+	results := make([]models.Link, 0, len(links))
 
 	for val := range resultch {
 		results = append(results, val)

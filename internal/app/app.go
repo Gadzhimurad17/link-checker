@@ -3,6 +3,7 @@ package app
 import (
 	"context"
 	"linkcheker/internal/interfaces/http"
+	"time"
 )
 
 type App struct {
@@ -13,6 +14,6 @@ func (app *App) Start() {
 	app.Server.Start()
 }
 
-func (app *App) Stop(ctx context.Context) {
-	app.Server.Shutdown(ctx)
+func (app *App) Stop(ctx context.Context, shutdownPeriod time.Duration, readinessDrainDelay time.Duration) {
+	app.Server.Shutdown(ctx, shutdownPeriod, readinessDrainDelay)
 }

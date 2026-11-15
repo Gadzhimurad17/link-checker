@@ -1,16 +1,19 @@
-package http
+package utils
 
 import (
 	"net/http"
 )
 
-type responseRecorder struct {
+type ResponseRecorder struct {
 	http.ResponseWriter
 
 	status int
 }
 
-func (w *responseRecorder) WriteHeader(status int) {
+func (w *ResponseRecorder) GetStatus() int {
+	return w.status
+}
+func (w *ResponseRecorder) WriteHeader(status int) {
 	if status >= 100 && status < 200 {
 		w.ResponseWriter.WriteHeader(status)
 		return
@@ -24,7 +27,7 @@ func (w *responseRecorder) WriteHeader(status int) {
 	w.ResponseWriter.WriteHeader(status)
 }
 
-func (w *responseRecorder) Write(data []byte) (int, error) {
+func (w *ResponseRecorder) Write(data []byte) (int, error) {
 	if w.status == 0 {
 		w.WriteHeader(http.StatusOK)
 	}
@@ -32,6 +35,6 @@ func (w *responseRecorder) Write(data []byte) (int, error) {
 	return w.ResponseWriter.Write(data)
 }
 
-func (w *responseRecorder) Unwrap() http.ResponseWriter {
+func (w *ResponseRecorder) Unwrap() http.ResponseWriter {
 	return w.ResponseWriter
 }

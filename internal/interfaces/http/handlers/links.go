@@ -1,18 +1,13 @@
-package http
+package handlers
 
 import (
 	"encoding/json"
 	"fmt"
+	"linkcheker/internal/domain/rules"
 	"linkcheker/internal/infrastructure/dto"
 	"log"
 	"net/http"
 	"strconv"
-	"strings"
-)
-
-const (
-	httpPrefix  = "http://"
-	httpsPrefix = "https://"
 )
 
 func encode[T any](rw http.ResponseWriter, status int, v T) error {
@@ -39,7 +34,7 @@ func (h *Handlers) CheckLinks(rw http.ResponseWriter, req *http.Request) {
 		rw.WriteHeader(http.StatusBadRequest)
 		return
 	}
-	h.validateLinks(decodeReq)
+	rules.ValidateLinks(decodeReq)
 
 	results := h.service.CheckLinks(
 		req.Context(),
@@ -74,33 +69,5 @@ func (h *Handlers) GetMostPopularLinks(rw http.ResponseWriter, req *http.Request
 		log.Printf("Encoding to json error %v", err)
 		rw.WriteHeader(http.StatusBadRequest)
 		return
-	}
-}
-
-func (h *Handlers) CheckApiHealth(w http.ResponseWriter, r *http.Request) {
-	w.WriteHeader(http.StatusOK)
-}
-
-func (h *Handlers) ReadinessCheck(w http.ResponseWriter, r *http.Request) {
-	if h.isShuttingDown.Load() {
-		w.WriteHeader(http.StatusServiceUnavailable)
-		return
-	}
-
-	w.WriteHeader(http.StatusOK)
-}
-
-func (h *Handlers) validateLinks(links dto.LinkRequest) *dto.LinkRequest {
-	linksURL := links.Links
-
-	for index, link := range linksURL {
-		if !strings.HasPrefix(link, httpPrefix) &&
-			!strings.HasPrefix(link, httpsPrefix) {
-			linksURL[index] = httpsPrefix + link
-		}
-	}
-
-	return &dto.LinkRequest{
-		Links: linksURL,
 	}
 }

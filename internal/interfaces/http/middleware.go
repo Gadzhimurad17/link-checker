@@ -1,7 +1,7 @@
 package http
 
 import (
-	"context"
+	"linkcheker/internal/interfaces/http/utils"
 	"log"
 	"net/http"
 	"time"
@@ -41,24 +41,14 @@ func (m *Middleware) ContentTypeChecker(next http.HandlerFunc) http.HandlerFunc 
 	}
 }
 
-func (m *Middleware) WithGracefulShutdown(next http.Handler, cancelCh <-chan struct{}) http.Handler {
-	return http.HandlerFunc(func(rw http.ResponseWriter, req *http.Request) {
-		ctx, cancel := m.cancel(req.Context(), cancelCh)
-		defer cancel()
-
-		req = req.WithContext(ctx)
-		next.ServeHTTP(rw, req)
-	})
-}
-
 func (m *Middleware) LogRequests(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		start := time.Now()
-		recorder := &responseRecorder{ResponseWriter: w}
+		recorder := &utils.ResponseRecorder{ResponseWriter: w}
 
 		next.ServeHTTP(recorder, r)
 
-		status := recorder.status
+		status := recorder.GetStatus()
 		if status == 0 {
 			status = http.StatusOK
 		}
@@ -82,18 +72,4 @@ func (m *Middleware) LogRequests(next http.Handler) http.Handler {
 			r.URL.Path,
 		)
 	})
-}
-
-func (m *Middleware) cancel(parentCtx context.Context, cancelCh <-chan struct{}) (context.Context, context.CancelFunc) {
-	ctx, cancel := context.WithCancel(parentCtx)
-
-	go func() {
-		select {
-		case <-cancelCh:
-			cancel()
-		case <-parentCtx.Done():
-		}
-	}()
-
-	return ctx, cancel
 }

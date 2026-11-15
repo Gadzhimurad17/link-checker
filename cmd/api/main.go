@@ -10,7 +10,8 @@ func main() {
 	cfg := config.LoadFromEnv()
 	factory := f.NewFactory(cfg)
 	app := factory.NewApp()
+	ctx := context.Background()
 
-	app.Start()
-	app.Stop(context.Background())
+	go app.Start()
+	app.Stop(ctx, cfg.ShutdownPeriod, cfg.ReadinessDrainDelay)
 }

@@ -11,6 +11,7 @@ type Config struct {
 	ConcurrencyConfig
 	LinksConfig
 	AppConfig
+	ServerConfig
 }
 
 func LoadFromEnv() *Config {
