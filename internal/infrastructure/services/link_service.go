@@ -87,12 +87,16 @@ func checkLink(parentCtx context.Context, url string) bool {
 	return resp.StatusCode >= 200 && resp.StatusCode < 400
 }
 
-func (s *LinkCheckerService) PopularLinks(limit int64, offset int64) []models.LinkStat {
+func (s *LinkCheckerService) PopularLinks(limit int64, offset int64) ([]models.LinkStat, error) {
+	if offset < 0 || limit <= 0 {
+		return nil, models.ErrInvalidPagination
+	}
+
 	links := s.linkRepo.FindLinks()
 	total := int64(len(links))
 
-	if offset < 0 || limit <= 0 || offset >= total {
-		return []models.LinkStat{}
+	if offset >= total {
+		return []models.LinkStat{}, nil
 	}
 
 	sort.Slice(links, func(i, j int) bool {
@@ -107,5 +111,5 @@ func (s *LinkCheckerService) PopularLinks(limit int64, offset int64) []models.Li
 		limit = total - offset
 	}
 
-	return links[offset : offset+limit]
+	return links[offset : offset+limit], nil
 }
