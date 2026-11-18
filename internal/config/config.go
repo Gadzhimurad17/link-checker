@@ -12,6 +12,7 @@ type Config struct {
 	LinksConfig
 	AppConfig
 	ServerConfig
+	BrokerConfig
 }
 
 func LoadFromEnv() *Config {
